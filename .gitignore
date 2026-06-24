@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Входные данные и сформированные отчеты
+*.xlsx
+*.xls
+*.csv
+~$*
+
+# Служебные файлы редакторов и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

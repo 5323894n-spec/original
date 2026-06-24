@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Подтверждение рейсов</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M7 3h8l4 4v14H7z"></path>
+          <path d="M15 3v5h5M10 12h6M10 16h6"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="eyebrow">Локальная обработка Excel и CSV</p>
+        <h1>Подтверждение рейсов</h1>
+        <p class="lead">
+          Сравните данные оператора и перевозчика и получите оформленный
+          Excel-отчёт за несколько секунд.
+        </p>
+      </div>
+    </header>
+
+    {% if error %}
+      <section class="notice error" role="alert">
+        <strong>Не удалось сформировать отчёт</strong>
+        <span>{{ error }}</span>
+      </section>
+    {% endif %}
+
+    {% if success %}
+      <section class="result" aria-live="polite">
+        <div class="result-heading">
+          <div class="check">✓</div>
+          <div>
+            <p class="eyebrow">Обработка завершена</p>
+            <h2>Отчёт готов</h2>
+            <p>{{ source_name }}</p>
+          </div>
+          <a class="button download" href="{{ url_for('download', token=token) }}">
+            Скачать Excel
+          </a>
+        </div>
+        <div class="stats">
+          <article>
+            <span>Всего строк</span>
+            <strong>{{ counters.total }}</strong>
+          </article>
+          <article>
+            <span>Подтверждено</span>
+            <strong>{{ counters.auto }}</strong>
+          </article>
+          <article class="accent">
+            <span>На подтверждение</span>
+            <strong>{{ counters.confirmation }}</strong>
+          </article>
+          <article>
+            <span>Ошибки проверки</span>
+            <strong>{{ error_count }}</strong>
+          </article>
+          <article>
+            <span>Транспортная работа</span>
+            <strong>{{ "{:,.2f}".format(counters.confirmation_km).replace(",", " ") }} км</strong>
+          </article>
+        </div>
+      </section>
+    {% endif %}
+
+    <section class="panel">
+      <div class="panel-title">
+        <div>
+          <p class="step">Новый отчёт</p>
+          <h2>Загрузите таблицы</h2>
+        </div>
+        <span class="privacy">Файлы остаются на вашем компьютере</span>
+      </div>
+
+      <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data" id="report-form">
+        <div class="upload-grid">
+          <label class="upload-card">
+            <span class="number">01</span>
+            <span class="upload-icon">↑</span>
+            <strong>Исходная таблица рейсов</strong>
+            <span class="hint">Excel или CSV · столбцы B–AF</span>
+            <input type="file" name="source" accept=".xlsx,.csv" required>
+            <span class="filename">Выбрать файл</span>
+          </label>
+
+          <label class="upload-card">
+            <span class="number">02</span>
+            <span class="upload-icon">≡</span>
+            <strong>Пример итоговой таблицы</strong>
+            <span class="hint">Excel или CSV · шаблон структуры</span>
+            <input type="file" name="template" accept=".xlsx,.csv" required>
+            <span class="filename">Выбрать файл</span>
+          </label>
+        </div>
+
+        <div class="form-footer">
+          <p>
+            Результат содержит листы «На подтверждение», «Сводка»
+            и «Ошибки проверки».
+          </p>
+          <button class="button" type="submit">
+            <span class="button-text">Сформировать отчёт</span>
+            <span class="button-loading">Обрабатываем…</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      <span>Дата сохраняется в формате ДД.ММ.ГГГГ</span>
+      <span>Максимальный размер файлов — 50 МБ</span>
+    </footer>
+  </main>
+
+  <script>
+    document.querySelectorAll('input[type="file"]').forEach((input) => {
+      input.addEventListener("change", () => {
+        const target = input.closest(".upload-card").querySelector(".filename");
+        target.textContent = input.files[0]?.name || "Выбрать файл";
+        input.closest(".upload-card").classList.toggle("selected", !!input.files[0]);
+      });
+    });
+
+    document.getElementById("report-form").addEventListener("submit", (event) => {
+      if (event.target.checkValidity()) {
+        document.body.classList.add("processing");
+        event.target.querySelector("button").disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
