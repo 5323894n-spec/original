@@ -103,6 +103,11 @@ h2 { margin-bottom: 7px; font-size: 25px; letter-spacing: -.025em; }
   margin: 28px 0;
 }
 
+.upload-grid.single {
+  grid-template-columns: minmax(320px, 620px);
+  justify-content: center;
+}
+
 .upload-card {
   position: relative;
   display: flex;

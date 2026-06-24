@@ -8,7 +8,7 @@ from pathlib import Path
 from flask import Flask, abort, render_template, request, send_file
 from werkzeug.utils import secure_filename
 
-from app import OUTPUT_NAME, build_workbook, process_rows, read_source, validate_template
+from app import OUTPUT_NAME, build_workbook, process_rows, read_source
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -44,33 +44,26 @@ def health():
 @web.post("/process")
 def process():
     source_upload = request.files.get("source")
-    template_upload = request.files.get("template")
 
     try:
         source_name = validate_uploaded_file(source_upload, "исходная таблица")
-        template_name = validate_uploaded_file(template_upload, "шаблон")
 
         with tempfile.TemporaryDirectory(prefix="trip_report_") as temp_dir:
             temp_path = Path(temp_dir)
             source_path = temp_path / (
                 "source" + Path(secure_filename(source_name)).suffix.lower()
             )
-            template_path = temp_path / (
-                "template" + Path(secure_filename(template_name)).suffix.lower()
-            )
             source_upload.save(source_path)
-            template_upload.save(template_path)
 
             source = read_source(str(source_path))
             source.source_name = source_name
-            validate_template(str(template_path))
             confirmation, errors, counters = process_rows(source)
             workbook = build_workbook(
                 confirmation,
                 errors,
                 counters,
                 source_name,
-                template_name,
+                "Встроенная структура отчёта",
             )
 
             output = io.BytesIO()

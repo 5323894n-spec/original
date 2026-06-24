@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Подтверждение рейсов</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='1.1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='1.2') }}">
 </head>
 <body>
   <main class="shell">
@@ -19,8 +19,8 @@
         <p class="eyebrow">Обработка Excel и CSV</p>
         <h1>Подтверждение рейсов</h1>
         <p class="lead">
-          Сравните данные оператора и перевозчика и получите оформленный
-          Excel-отчёт за несколько секунд.
+          Загрузите таблицу рейсов, сравните данные оператора и перевозчика
+          и получите оформленный Excel-отчёт.
         </p>
       </div>
     </header>
@@ -74,28 +74,18 @@
       <div class="panel-title">
         <div>
           <p class="step">Новый отчёт</p>
-          <h2>Загрузите таблицы</h2>
+        <h2>Загрузите исходную таблицу</h2>
         </div>
         <span class="privacy">Без постоянного хранения файлов</span>
       </div>
 
       <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data" id="report-form">
-        <div class="upload-grid">
+        <div class="upload-grid single">
           <label class="upload-card">
-            <span class="number">01</span>
             <span class="upload-icon">↑</span>
             <strong>Исходная таблица рейсов</strong>
             <span class="hint">Excel или CSV · столбцы B–AF</span>
             <input type="file" name="source" accept=".xlsx,.csv" required>
-            <span class="filename">Выбрать файл</span>
-          </label>
-
-          <label class="upload-card">
-            <span class="number">02</span>
-            <span class="upload-icon">≡</span>
-            <strong>Пример итоговой таблицы</strong>
-            <span class="hint">Excel или CSV · шаблон структуры</span>
-            <input type="file" name="template" accept=".xlsx,.csv" required>
             <span class="filename">Выбрать файл</span>
           </label>
         </div>
