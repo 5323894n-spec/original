@@ -28,7 +28,8 @@
 ## Развертывание в интернете
 
 Репозиторий содержит `render.yaml` и `Procfile`, поэтому его можно подключить
-к Render как Web Service. Команда запуска: `gunicorn web_app:web`.
+к Render как Web Service. Сервер запускается с увеличенным тайм-аутом для
+обработки и оформления больших Excel-файлов.
 
 Публичная версия: `https://trip-confirmation.onrender.com`
 

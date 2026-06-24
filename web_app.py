@@ -108,5 +108,16 @@ def file_too_large(_error):
     ), 413
 
 
+@web.errorhandler(500)
+def internal_error(_error):
+    return render_template(
+        "index.html",
+        error=(
+            "Сервер не смог завершить обработку файла. "
+            "Повторите попытку; если ошибка сохранится, проверьте формат исходной таблицы."
+        ),
+    ), 500
+
+
 if __name__ == "__main__":
     web.run(host="127.0.0.1", port=5000, debug=False)
