@@ -45,7 +45,6 @@ RESULT_HEADERS = [
     "ГРЗ",
     "Фактическая транспортная работа, км",
     "Комментарий",
-    "Прикрепленный файл",
 ]
 
 
@@ -328,7 +327,6 @@ def process_rows(source: SourceTable) -> tuple[list[list[Any]], list[list[Any]],
                 grz,
                 km if km is not None else normalize_text(km_raw),
                 COMMENT,
-                "",
             ])
         elif operator == 1 and carrier == 0:
             counters["operator_1_carrier_0"] += 1
@@ -384,8 +382,8 @@ def build_workbook(
     if confirmation:
         style_body(confirmation_sheet, 2, len(confirmation) + 1, len(RESULT_HEADERS))
     confirmation_sheet.freeze_panes = "A2"
-    confirmation_sheet.auto_filter.ref = f"A1:I{max(1, len(confirmation) + 1)}"
-    set_column_widths(confirmation_sheet, (7, 20, 14, 22, 22, 16, 24, 55, 24))
+    confirmation_sheet.auto_filter.ref = f"A1:H{max(1, len(confirmation) + 1)}"
+    set_column_widths(confirmation_sheet, (7, 20, 14, 22, 22, 16, 24, 55))
     confirmation_sheet.sheet_view.showGridLines = False
     for row_number in range(2, len(confirmation) + 2):
         confirmation_sheet.cell(row_number, 2).number_format = "@"
