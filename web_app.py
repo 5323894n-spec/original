@@ -36,6 +36,11 @@ def index():
     return render_template("index.html")
 
 
+@web.get("/health")
+def health():
+    return {"status": "ok"}
+
+
 @web.post("/process")
 def process():
     source_upload = request.files.get("source")

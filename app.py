@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import csv
 import math
-import os
 import sys
 from dataclasses import dataclass
 from datetime import date, datetime, time
@@ -470,98 +469,12 @@ def generate_report(source_path: str, template_path: str, output_directory: str)
     return output_path, counters
 
 
-def run_gui() -> None:
-    import tkinter as tk
-    from tkinter import filedialog, messagebox, ttk
-
-    root = tk.Tk()
-    root.title("Подтверждение рейсов")
-    root.geometry("820x330")
-    root.minsize(720, 310)
-
-    source_var = tk.StringVar()
-    template_var = tk.StringVar()
-    output_var = tk.StringVar(value=str(Path.home() / "Documents"))
-    status_var = tk.StringVar(value="Выберите два файла и папку для результата.")
-
-    container = ttk.Frame(root, padding=18)
-    container.pack(fill="both", expand=True)
-    container.columnconfigure(1, weight=1)
-
-    def choose_file(target: tk.StringVar) -> None:
-        selected = filedialog.askopenfilename(
-            filetypes=[("Таблицы Excel/CSV", "*.xlsx *.csv"), ("Все файлы", "*.*")]
-        )
-        if selected:
-            target.set(selected)
-
-    def choose_directory() -> None:
-        selected = filedialog.askdirectory()
-        if selected:
-            output_var.set(selected)
-
-    labels = (
-        ("Исходный файл №1:", source_var, lambda: choose_file(source_var), "Выбрать исходный файл"),
-        ("Шаблон (файл №2):", template_var, lambda: choose_file(template_var), "Выбрать шаблон"),
-        ("Папка результата:", output_var, choose_directory, "Выбрать папку"),
-    )
-    for row_number, (label, variable, command, button_text) in enumerate(labels):
-        ttk.Label(container, text=label).grid(row=row_number, column=0, sticky="w", pady=7)
-        ttk.Entry(container, textvariable=variable).grid(
-            row=row_number, column=1, sticky="ew", padx=10, pady=7
-        )
-        ttk.Button(container, text=button_text, command=command).grid(
-            row=row_number, column=2, sticky="ew", pady=7
-        )
-
-    progress = ttk.Progressbar(container, mode="indeterminate")
-    progress.grid(row=3, column=0, columnspan=3, sticky="ew", pady=(16, 8))
-
-    def create_report() -> None:
-        if not source_var.get() or not template_var.get() or not output_var.get():
-            messagebox.showwarning("Не все данные выбраны", "Выберите оба файла и папку результата.")
-            return
-        try:
-            status_var.set("Формирование отчета…")
-            progress.start(12)
-            root.update_idletasks()
-            output_path, counters = generate_report(
-                source_var.get(), template_var.get(), output_var.get()
-            )
-        except Exception as exc:
-            status_var.set("Не удалось сформировать отчет.")
-            messagebox.showerror("Ошибка", str(exc))
-        else:
-            status_var.set(f"Готово: {output_path}")
-            messagebox.showinfo(
-                "Отчет сформирован",
-                f"Файл сохранен:\n{output_path}\n\n"
-                f"На подтверждение: {counters['confirmation']}\n"
-                f"Засчитано автоматически: {counters['auto']}",
-            )
-        finally:
-            progress.stop()
-
-    ttk.Button(
-        container,
-        text="Сформировать отчет",
-        command=create_report,
-    ).grid(row=4, column=0, columnspan=3, pady=12, ipadx=24, ipady=6)
-    ttk.Label(container, textvariable=status_var, wraplength=760).grid(
-        row=5, column=0, columnspan=3, sticky="w", pady=(4, 0)
-    )
-
-    root.mainloop()
-
-
 if __name__ == "__main__":
-    if "--cli" in sys.argv:
-        if len(sys.argv) != 5:
-            raise SystemExit(
-                'Использование: python app.py --cli "исходник.xlsx" "шаблон.csv" "папка"'
-            )
-        result_path, result_counters = generate_report(sys.argv[2], sys.argv[3], sys.argv[4])
-        print(f"Готово: {result_path}")
-        print(f"На подтверждение: {result_counters['confirmation']}")
-    else:
-        run_gui()
+    if len(sys.argv) != 5 or sys.argv[1] != "--cli":
+        raise SystemExit(
+            "Пользовательская обработка выполняется через веб-приложение.\n"
+            "Запустите run.bat и откройте http://127.0.0.1:5000/"
+        )
+    result_path, result_counters = generate_report(sys.argv[2], sys.argv[3], sys.argv[4])
+    print(f"Готово: {result_path}")
+    print(f"На подтверждение: {result_counters['confirmation']}")
