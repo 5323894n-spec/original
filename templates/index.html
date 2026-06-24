@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Подтверждение рейсов</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='1.1') }}">
 </head>
 <body>
   <main class="shell">
@@ -16,7 +16,7 @@
         </svg>
       </div>
       <div>
-        <p class="eyebrow">Веб-обработка Excel и CSV</p>
+        <p class="eyebrow">Обработка Excel и CSV</p>
         <h1>Подтверждение рейсов</h1>
         <p class="lead">
           Сравните данные оператора и перевозчика и получите оформленный
@@ -76,7 +76,7 @@
           <p class="step">Новый отчёт</p>
           <h2>Загрузите таблицы</h2>
         </div>
-        <span class="privacy">Файлы удаляются после обработки</span>
+        <span class="privacy">Без постоянного хранения файлов</span>
       </div>
 
       <form action="{{ url_for('process') }}" method="post" enctype="multipart/form-data" id="report-form">
